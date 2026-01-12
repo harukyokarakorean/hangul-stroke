@@ -8,87 +8,33 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-// 各母音の線の座標（簡略化した縦・横線パターン）
-const vowels = [
-  // ㅏ
-  [
-    { start: [150, 40], end: [150, 200] },
-    { start: [150, 120], end: [210, 120] }
-  ],
-  // ㅑ
-  [
-    { start: [140, 40], end: [140, 200] },
-    { start: [160, 40], end: [160, 200] },
-    { start: [160, 120], end: [220, 120] }
-  ],
-  // ㅓ
-  [
-    { start: [210, 40], end: [210, 200] },
-    { start: [150, 120], end: [210, 120] }
-  ],
-  // ㅕ
-  [
-    { start: [200, 40], end: [200, 200] },
-    { start: [220, 40], end: [220, 200] },
-    { start: [150, 120], end: [220, 120] }
-  ],
-  // ㅗ
-  [
-    { start: [150, 120], end: [210, 120] },
-    { start: [180, 120], end: [180, 180] }
-  ],
-  // ㅛ
-  [
-    { start: [150, 120], end: [210, 120] },
-    { start: [180, 120], end: [180, 180] },
-    { start: [180, 150], end: [210, 150] }
-  ],
-  // ㅜ
-  [
-    { start: [150, 180], end: [210, 180] },
-    { start: [180, 120], end: [180, 180] }
-  ],
-  // ㅠ
-  [
-    { start: [150, 180], end: [210, 180] },
-    { start: [180, 120], end: [180, 180] },
-    { start: [180, 150], end: [150, 150] }
-  ],
-  // ㅡ
-  [
-    { start: [150, 150], end: [210, 150] }
-  ],
-  // ㅣ
-  [
-    { start: [180, 40], end: [180, 200] }
-  ]
+// ㅑ の線の座標（正確な位置で縦線2本＋横線1本）
+const strokes = [
+  { start: [130, 40], end: [130, 200] }, // 左の縦線
+  { start: [150, 40], end: [150, 200] }, // 右の縦線（ㅏの縦線）
+  { start: [150, 120], end: [210, 120] } // 横線
 ];
 
 const stepCount = 20; // 線を分割するステップ数
-let vowelIndex = 0;
 let strokeIndex = 0;
 let step = 0;
 
-function drawVowel() {
+function draw() {
   ctx.lineWidth = 6;
   ctx.lineCap = "round";
   ctx.strokeStyle = "black";
 
-  const currentVowel = vowels[vowelIndex];
-
-  if (strokeIndex >= currentVowel.length) {
-    // すべての線を書き終えたら少し待って白紙に戻す
+  if (strokeIndex >= strokes.length) {
     setTimeout(() => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      vowelIndex = (vowelIndex + 1) % vowels.length; // 次の母音へ
       strokeIndex = 0;
       step = 0;
-      setTimeout(drawVowel, 500); // 少し待って再スタート
+      setTimeout(draw, 500); // 白紙から再スタート
     }, 500);
     return;
   }
 
-  const stroke = currentVowel[strokeIndex];
+  const stroke = strokes[strokeIndex];
   const [x0, y0] = stroke.start;
   const [x1, y1] = stroke.end;
 
@@ -105,15 +51,15 @@ function drawVowel() {
 
   step++;
   if (step <= stepCount) {
-    setTimeout(drawVowel, 50); // 線を描くスピード
+    setTimeout(draw, 50); // 線を描くスピード
   } else {
     strokeIndex++;
     step = 0;
-    setTimeout(drawVowel, 200); // 次の線までの間隔
+    setTimeout(draw, 200); // 次の線までの間隔
   }
 }
 
-window.onload = drawVowel;
+window.onload = draw;
 </script>
 
 </body>
