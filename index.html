@@ -2,45 +2,64 @@
 <html>
 <body>
 
-<canvas id="canvas" width="300" height="300"></canvas>
+<canvas id="canvas" width="300" height="300" style="border:1px solid #ccc;"></canvas>
 
 <script>
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+// ㅏ の線の座標（縦線と横線）
 const strokes = [
-  [[150, 40], [150, 200]],
-  [[150, 120], [210, 120]]
+  { start: [150, 40], end: [150, 200] }, // 縦線
+  { start: [150, 120], end: [210, 120] } // 横線
 ];
 
+const stepCount = 20; // 線を分割するステップ数
 let strokeIndex = 0;
-let pointIndex = 0;
+let step = 0;
 
 function play() {
   ctx.lineWidth = 6;
   ctx.lineCap = "round";
   ctx.strokeStyle = "black";
-  draw();
+  
+  setTimeout(draw, 500); // 少し待って白紙状態から開始
 }
 
 function draw() {
-  if (strokeIndex >= strokes.length) return;
-
-  const stroke = strokes[strokeIndex];
-  if (pointIndex === 0) {
-    ctx.beginPath();
-    ctx.moveTo(stroke[0][0], stroke[0][1]);
+  if (strokeIndex >= strokes.length) {
+    // すべての線を書き終わったら少し待って消す
+    setTimeout(() => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // 白紙に戻す
+      strokeIndex = 0;
+      step = 0;
+      setTimeout(draw, 500); // 少し待って再スタート
+    }, 500);
+    return;
   }
 
-  pointIndex++;
-  if (pointIndex < stroke.length) {
-    ctx.lineTo(stroke[pointIndex][0], stroke[pointIndex][1]);
-    ctx.stroke();
-    setTimeout(draw, 500);
+  const stroke = strokes[strokeIndex];
+  const [x0, y0] = stroke.start;
+  const [x1, y1] = stroke.end;
+
+  const x = x0 + ((x1 - x0) * step / stepCount);
+  const y = y0 + ((y1 - y0) * step / stepCount);
+
+  if (step === 0) {
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+  }
+
+  ctx.lineTo(x, y);
+  ctx.stroke();
+
+  step++;
+  if (step <= stepCount) {
+    setTimeout(draw, 50); // 線を描くスピード
   } else {
     strokeIndex++;
-    pointIndex = 0;
-    setTimeout(draw, 500);
+    step = 0;
+    setTimeout(draw, 200); // 次の線までの間隔
   }
 }
 
