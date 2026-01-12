@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Hangul Stroke Player</title>
+
+<style>
+svg { width: 300px; height: 300px; }
+path {
+  fill: none;
+  stroke: black;
+  stroke-width: 12;
+  stroke-linecap: round;
+}
+</style>
+</head>
+
+<body>
+
+<h2>ㄱ</h2>
+<button onclick="play()">▶ 再生</button>
+
+<svg viewBox="0 0 200 200" id="svg"></svg>
+
+<script>
+const strokes = [
+  "M40 60 L140 60",
+  "M140 60 L140 140"
+];
+
+function play() {
+  const svg = document.getElementById("svg");
+  svg.innerHTML = "";
+  strokes.forEach((d, i) => {
+    const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    p.setAttribute("d", d);
+    p.style.strokeDasharray = 300;
+    p.style.strokeDashoffset = 300;
+    svg.appendChild(p);
+
+    setTimeout(() => {
+      p.style.transition = "stroke-dashoffset 1s ease";
+      p.style.strokeDashoffset = 0;
+    }, i * 1000);
+  });
+}
+</script>
+
+</body>
+</html>
