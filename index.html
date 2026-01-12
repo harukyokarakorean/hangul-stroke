@@ -1,60 +1,51 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>Hangul Stroke Player</title>
-
-<style>
-svg { width: 300px; height: 300px; }
-path {
-  fill: none;
-  stroke: black;
-  stroke-width: 12;
-  stroke-linecap: round;
-}
-</style>
-</head>
-
+<html>
 <body>
 
-<h2>ㄱ</h2>
-<button onclick="play()">▶ 再生</button>
-
-<svg viewBox="0 0 200 200" id="svg"></svg>
+<canvas id="canvas" width="300" height="300"></canvas>
 
 <script>
-const strokes = [
-  [[100, 40], [100, 160]],
-  [[100, 100], [160, 100]]
-];
-
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+const strokes = [
+  [[150, 40], [150, 200]],
+  [[150, 120], [210, 120]]
+];
+
+let strokeIndex = 0;
+let pointIndex = 0;
+
 function play() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.lineWidth = 6;
   ctx.lineCap = "round";
+  ctx.strokeStyle = "black";
+  draw();
+}
 
-  let i = 0;
+function draw() {
+  if (strokeIndex >= strokes.length) return;
 
-  function drawStroke() {
-    if (i >= strokes.length) return;
-
-    const [start, end] = strokes[i];
+  const stroke = strokes[strokeIndex];
+  if (pointIndex === 0) {
     ctx.beginPath();
-    ctx.moveTo(start[0], start[1]);
-    ctx.lineTo(end[0], end[1]);
-    ctx.stroke();
-
-    i++;
-    setTimeout(drawStroke, 500);
+    ctx.moveTo(stroke[0][0], stroke[0][1]);
   }
 
-  drawStroke();
+  pointIndex++;
+  if (pointIndex < stroke.length) {
+    ctx.lineTo(stroke[pointIndex][0], stroke[pointIndex][1]);
+    ctx.stroke();
+    setTimeout(draw, 500);
+  } else {
+    strokeIndex++;
+    pointIndex = 0;
+    setTimeout(draw, 500);
+  }
 }
 
 window.onload = play;
 </script>
+
 </body>
 </html>
