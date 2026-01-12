@@ -24,31 +24,36 @@ path {
 
 <script>
 const strokes = [
-  // ① 縦線
   [[100, 40], [100, 160]],
-
-  // ② 横線
   [[100, 100], [160, 100]]
 ];
 
-function play() {
-  const svg = document.getElementById("svg");
-  svg.innerHTML = "";
-  strokes.forEach((d, i) => {
-    const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    p.setAttribute("d", d);
-    p.style.strokeDasharray = 300;
-    p.style.strokeDashoffset = 300;
-    svg.appendChild(p);
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-    setTimeout(() => {
-      p.style.transition = "stroke-dashoffset 1s ease";
-      p.style.strokeDashoffset = 0;
-    }, i * 1000);
-  });
+function play() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.lineWidth = 6;
+  ctx.lineCap = "round";
+
+  let i = 0;
+
+  function drawStroke() {
+    if (i >= strokes.length) return;
+
+    const [start, end] = strokes[i];
+    ctx.beginPath();
+    ctx.moveTo(start[0], start[1]);
+    ctx.lineTo(end[0], end[1]);
+    ctx.stroke();
+
+    i++;
+    setTimeout(drawStroke, 500);
+  }
+
+  drawStroke();
 }
-</script>
-<script>
+
 window.onload = play;
 </script>
 </body>
