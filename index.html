@@ -8,14 +8,14 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-// ㅑ の線の座標（正確な位置で縦線2本＋横線1本）
+// ㅑ の線座標（縦棒1本＋横棒2本）
 const strokes = [
-  { start: [130, 40], end: [130, 200] }, // 左の縦線
-  { start: [150, 40], end: [150, 200] }, // 右の縦線（ㅏの縦線）
-  { start: [150, 120], end: [210, 120] } // 横線
+  { start: [160, 40], end: [160, 200] }, // 長い縦棒
+  { start: [160, 80], end: [210, 80] },  // 上の短い横棒
+  { start: [160, 120], end: [210, 120] } // 下の短い横棒
 ];
 
-const stepCount = 20; // 線を分割するステップ数
+const stepCount = 20;
 let strokeIndex = 0;
 let step = 0;
 
@@ -51,11 +51,11 @@ function draw() {
 
   step++;
   if (step <= stepCount) {
-    setTimeout(draw, 50); // 線を描くスピード
+    setTimeout(draw, 50);
   } else {
     strokeIndex++;
     step = 0;
-    setTimeout(draw, 200); // 次の線までの間隔
+    setTimeout(draw, 200);
   }
 }
 
